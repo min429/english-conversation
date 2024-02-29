@@ -8,7 +8,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 @Getter
 @Component
-//@Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
+@Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class ChatGPTContent {
 
     private String Content = """

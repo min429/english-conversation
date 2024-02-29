@@ -24,8 +24,7 @@ public class ChatController {
     @PostMapping
     public ResponseEntity<GPTMessage> chat(@RequestBody ChatGPTRequestDto request) throws IOException {
         log.debug("request: {}", request);
-        GPTMessage gptMessage = chatService.processChatRequest(request);
-        return ResponseEntity.ok(gptMessage);
+        return ResponseEntity.ok(chatService.processChatRequest(request));
     }
 
 }

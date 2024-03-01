@@ -3,6 +3,7 @@ package toyproject.personal.englishconversation.controller.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,8 +22,14 @@ public class ChatGPTRequestDto {
     private String topic;
 
     /** ChatGPTContent 추가 (메시지 세팅) **/
-    public void addContentToMessages(String content){
+    public void addContentToMessages(String content) {
         ((LinkedList<Message>) messages).addFirst(new Message("user", content));
     }
 
+    @Builder
+    private ChatGPTRequestDto(List<Message> messages, String model, String topic) {
+        this.messages = messages;
+        this.model = model;
+        this.topic = topic;
+    }
 }

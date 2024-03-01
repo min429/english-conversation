@@ -8,7 +8,7 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class ChatGPTConfig {
 
-    @Value("${api.key}")
+    @Value("${GPT_API_KEY}")
     private String API_KEY;
     public static final String URL = "https://api.openai.com/v1/chat/completions";
 

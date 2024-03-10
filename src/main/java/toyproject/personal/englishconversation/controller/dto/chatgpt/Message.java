@@ -1,4 +1,4 @@
-package toyproject.personal.englishconversation.controller.dto;
+package toyproject.personal.englishconversation.controller.dto.chatgpt;
 
 import lombok.*;
 

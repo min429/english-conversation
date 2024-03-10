@@ -1,4 +1,4 @@
-package toyproject.personal.englishconversation.controller.dto;
+package toyproject.personal.englishconversation.controller.dto.chatgpt;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;

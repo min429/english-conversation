@@ -6,7 +6,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import toyproject.personal.englishconversation.controller.dto.ChatGPTRequestDto;
+import org.springframework.test.web.servlet.ResultActions;
+import toyproject.personal.englishconversation.controller.dto.chatgpt.ChatGPTRequestDto;
 import toyproject.personal.englishconversation.domain.message.GPTMessage;
 import toyproject.personal.englishconversation.service.ChatService;
 
@@ -44,10 +45,13 @@ class ChatControllerTest {
                 .build();
         given(chatService.processChatRequest(any(ChatGPTRequestDto.class))).willReturn(gptMessage);
 
-        // WhenThen
-        mockMvc.perform(post("/chat")
+        // When
+        ResultActions resultActions = mockMvc.perform(post("/chat")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{}"))
+                .content("{}"));
+
+        // Then
+        resultActions
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value("1"))
                 .andExpect(jsonPath("$.explanation").value("explanation"))

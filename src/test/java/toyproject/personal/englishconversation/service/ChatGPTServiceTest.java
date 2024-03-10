@@ -9,11 +9,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.client.RestTemplate;
-import toyproject.personal.englishconversation.config.ChatGPTConfig;
-import toyproject.personal.englishconversation.config.ChatGPTContent;
-import toyproject.personal.englishconversation.controller.dto.ChatGPTRequestDto;
-import toyproject.personal.englishconversation.controller.dto.ChatGPTResponseDto;
-import toyproject.personal.englishconversation.controller.dto.Message;
+import toyproject.personal.englishconversation.config.chatgpt.ChatGPTConfig;
+import toyproject.personal.englishconversation.config.chatgpt.ChatGPTContent;
+import toyproject.personal.englishconversation.controller.dto.chatgpt.ChatGPTRequestDto;
+import toyproject.personal.englishconversation.controller.dto.chatgpt.ChatGPTResponseDto;
+import toyproject.personal.englishconversation.controller.dto.chatgpt.Message;
 import toyproject.personal.englishconversation.domain.message.GPTMessage;
 
 import java.util.HashMap;

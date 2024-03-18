@@ -1,4 +1,4 @@
-package toyproject.personal.englishconversation.config;
+package toyproject.personal.englishconversation.config.chatgpt;
 
 import lombok.Getter;
 import org.springframework.context.annotation.Scope;

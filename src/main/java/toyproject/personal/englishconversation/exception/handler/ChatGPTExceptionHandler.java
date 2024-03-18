@@ -1,4 +1,4 @@
-package toyproject.personal.englishconversation.exception;
+package toyproject.personal.englishconversation.exception.handler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -8,16 +8,15 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 import toyproject.personal.englishconversation.controller.ChatController;
-
-import java.io.IOException;
+import toyproject.personal.englishconversation.exception.ErrorResult;
 
 @Slf4j
 @RestControllerAdvice(assignableTypes = ChatController.class)
 public class ChatGPTExceptionHandler {
 
     @ExceptionHandler
-    public ResponseEntity<ErrorResult> HttpClientErrorExceptionHandle(HttpClientErrorException e) {
-        log.error("[HttpClientErrorExceptionHandle] ex", e);
+    public ResponseEntity<ErrorResult> handleHttpClientErrorException(HttpClientErrorException e) {
+        log.error("[HttpClientErrorException] ex", e);
 
         ErrorResult errorResult = new ErrorResult("EX", "서버 오류");
 
@@ -39,15 +38,8 @@ public class ChatGPTExceptionHandler {
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler
-    public ErrorResult objectMapperExceptionHandle(IOException e){
-        log.error("[objectMapperExceptionHandle] ex", e);
+    public ErrorResult handleInternalException(Exception e){
+        log.error("[InternalException] ex", e);
         return new ErrorResult("EX", "서버 오류");
-    }
-
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler
-    public ErrorResult internalExceptionHandle(Exception e){
-      log.error("[internalExceptionHandle] ex", e);
-      return new ErrorResult("EX", "서버 오류");
     }
 }

@@ -1,4 +1,4 @@
-package toyproject.personal.englishconversation.config;
+package toyproject.personal.englishconversation.config.chatgpt;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

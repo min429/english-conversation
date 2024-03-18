@@ -4,9 +4,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-import toyproject.personal.englishconversation.config.ChatGPTContent;
-import toyproject.personal.englishconversation.controller.dto.ChatGPTRequestDto;
-import toyproject.personal.englishconversation.controller.dto.Message;
+import toyproject.personal.englishconversation.config.chatgpt.ChatGPTContent;
+import toyproject.personal.englishconversation.controller.dto.chatgpt.ChatGPTRequestDto;
+import toyproject.personal.englishconversation.controller.dto.chatgpt.Message;
+import org.springframework.context.annotation.Import;
+import toyproject.personal.englishconversation.NoSecurityTestConfig;
 import toyproject.personal.englishconversation.domain.message.GPTMessage;
 
 import java.io.IOException;
@@ -20,6 +22,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
+@Import(NoSecurityTestConfig.class)
 class ChatServiceTest {
 
     @Mock

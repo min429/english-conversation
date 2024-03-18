@@ -33,7 +33,7 @@ jobs:
       uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
 
     - name: Build with Gradle Wrapper
-      run: ./gradlew build -i # 모든 로그 출력
+      run: ./gradlew build -s # 모든 로그 출력
       env:
         GPT_API_KEY: ${{ secrets.GPT_API_KEY }}
         JWT_ISSUER: ${{ secrets.JWT_ISSUER }}
@@ -72,7 +72,7 @@ jobs:
       uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
 
     - name: Test with Gradle Wrapper
-      run: ./gradlew test -i # 모든 로그 출력
+      run: ./gradlew test -s # 모든 로그 출력
       env:
         GPT_API_KEY: ${{ secrets.GPT_API_KEY }}
         JWT_ISSUER: ${{ secrets.JWT_ISSUER }}

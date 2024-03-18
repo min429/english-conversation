@@ -4,10 +4,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import toyproject.personal.englishconversation.controller.dto.chatgpt.ChatGPTRequestDto;
+import toyproject.personal.englishconversation.NoSecurityTestConfig;
 import toyproject.personal.englishconversation.domain.message.GPTMessage;
 import toyproject.personal.englishconversation.service.ChatService;
 
@@ -20,6 +22,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = ChatController.class)
+@Import(NoSecurityTestConfig.class)
 class ChatControllerTest {
 
     @Autowired

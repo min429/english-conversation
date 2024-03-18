@@ -1,7 +1,6 @@
 package toyproject.personal.englishconversation.exception;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 
 @Getter

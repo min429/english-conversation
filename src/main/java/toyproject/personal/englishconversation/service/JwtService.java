@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import toyproject.personal.englishconversation.config.jwt.JwtProvider;
-import toyproject.personal.englishconversation.controller.dto.jwt.JwtRefreshResponse;
+import toyproject.personal.englishconversation.controller.dto.jwt.JwtRefreshResponseDto;
 import toyproject.personal.englishconversation.domain.RefreshToken;
 import toyproject.personal.englishconversation.domain.User;
 import toyproject.personal.englishconversation.exception.TokenValidationException;
@@ -22,7 +22,7 @@ public class JwtService {
     private final RefreshTokenMapper refreshTokenMapper;
     private final UserService userService;
 
-    public JwtRefreshResponse createNewTokens(String token) {
+    public JwtRefreshResponseDto createNewTokens(String token) {
         RefreshToken refreshToken = refreshTokenMapper.findByRefreshToken(token);
         if(refreshToken == null) {
             throw new TokenValidationException("로그인 필요");
@@ -38,6 +38,6 @@ public class JwtService {
 
         refreshTokenMapper.update(userId, newRefreshToken);
 
-        return new JwtRefreshResponse(newAccessToken, newRefreshToken);
+        return new JwtRefreshResponseDto(newAccessToken, newRefreshToken);
     }
 }

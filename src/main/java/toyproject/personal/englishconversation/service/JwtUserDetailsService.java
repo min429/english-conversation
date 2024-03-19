@@ -3,6 +3,7 @@ package toyproject.personal.englishconversation.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import toyproject.personal.englishconversation.domain.User;
 import toyproject.personal.englishconversation.exception.UserEmailException;
@@ -20,6 +21,14 @@ public class JwtUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) {
         User user = userMapper.findByEmail(email);
         if (user == null) {
+            throw new UserEmailException("아이디 불일치");
+        }
+        return user;
+    }
+
+    public User getUserById(Long userId) {
+        User user = userMapper.findById(userId);
+        if(user == null){
             throw new UserEmailException("아이디 불일치");
         }
         return user;

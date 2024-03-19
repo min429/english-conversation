@@ -19,8 +19,8 @@ public class JwtController {
     private final JwtService jwtService;
 
     @PostMapping("/create")
-    public ResponseEntity<JwtRefreshResponseDto> createNewTokens(@RequestBody JwtRefreshRequestDto request) {
+    public ResponseEntity<JwtRefreshResponseDto> refreshTokens(@RequestBody JwtRefreshRequestDto request) {
         return ResponseEntity.status(HttpStatus.CREATED).
-                body(jwtService.createNewTokens(request.getRefreshToken()));
+                body(jwtService.refreshTokens(request.getRefreshToken()));
     }
 }

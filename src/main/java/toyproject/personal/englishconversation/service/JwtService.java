@@ -20,9 +20,9 @@ public class JwtService {
 
     private final JwtProvider jwtProvider;
     private final RefreshTokenMapper refreshTokenMapper;
-    private final UserService userService;
+    private final JwtUserDetailsService jwtUserDetailsService;
 
-    public JwtRefreshResponseDto createNewTokens(String token) {
+    public JwtRefreshResponseDto refreshTokens(String token) {
         RefreshToken refreshToken = refreshTokenMapper.findByRefreshToken(token);
         if(refreshToken == null) {
             throw new TokenValidationException("로그인 필요");
@@ -31,7 +31,7 @@ public class JwtService {
         jwtProvider.ValidateToken(token);
 
         Long userId = refreshToken.getUserId();
-        User user = userService.getUserById(userId);
+        User user = jwtUserDetailsService.getUserById(userId);
 
         String newAccessToken = jwtProvider.generateToken(user, Duration.ofMinutes(30), List.of("ROLE_USER"));
         String newRefreshToken = jwtProvider.generateToken(user, Duration.ofDays(7), List.of("ROLE_USER"));
@@ -39,5 +39,21 @@ public class JwtService {
         refreshTokenMapper.update(userId, newRefreshToken);
 
         return new JwtRefreshResponseDto(newAccessToken, newRefreshToken);
+    }
+
+    public JwtRefreshResponseDto createNewTokens(User user){
+        String newAccessToken = jwtProvider.generateToken(user, Duration.ofMinutes(30), List.of("ROLE_USER"));
+        String newRefreshToken = jwtProvider.generateToken(user, Duration.ofDays(7), List.of("ROLE_USER"));
+        return new JwtRefreshResponseDto(newAccessToken, newRefreshToken);
+    }
+
+    public void saveOrUpdateRefreshToken(User user, String newRefreshToken){
+        RefreshToken refreshToken = refreshTokenMapper.findByUserId(user.getId());
+        if(refreshToken != null) {
+            refreshTokenMapper.update(user.getId(), newRefreshToken);
+        }
+        else {
+            refreshTokenMapper.save(user.getId(), newRefreshToken);
+        }
     }
 }

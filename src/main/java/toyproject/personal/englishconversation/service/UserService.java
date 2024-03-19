@@ -5,6 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import toyproject.personal.englishconversation.config.jwt.JwtProvider;
+import toyproject.personal.englishconversation.controller.dto.jwt.JwtRefreshResponseDto;
 import toyproject.personal.englishconversation.controller.dto.user.SignUpRequestDto;
 import toyproject.personal.englishconversation.controller.dto.user.SignInRequestDto;
 import toyproject.personal.englishconversation.controller.dto.user.SignInResultDto;
@@ -25,8 +26,7 @@ public class UserService {
 
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
-    private final JwtProvider jwtProvider;
-    private final RefreshTokenMapper refreshTokenMapper;
+    private final JwtService jwtService;
 
     public void save(SignUpRequestDto signUpRequestDto) {
         userMapper.save(User.builder()
@@ -50,25 +50,13 @@ public class UserService {
             throw new UserPasswordException("비밀번호 불일치");
         }
 
-        String newAccessToken = jwtProvider.generateToken(user, Duration.ofMinutes(30), List.of("ROLE_USER"));
-        String newRefreshToken = jwtProvider.generateToken(user, Duration.ofDays(7), List.of("ROLE_USER"));
+        JwtRefreshResponseDto newTokens = jwtService.createNewTokens(user);
 
-        RefreshToken refreshToken = refreshTokenMapper.findByUserId(user.getId());
-        if(refreshToken != null) {
-            refreshTokenMapper.update(user.getId(), newRefreshToken);
-        }
-        else {
-            refreshTokenMapper.save(user.getId(), newRefreshToken);
-        }
+        String newAccessToken = newTokens.getAccessToken();
+        String newRefreshToken = newTokens.getRefreshToken();
+
+        jwtService.saveOrUpdateRefreshToken(user, newRefreshToken);
 
         return new SignInResultDto(newAccessToken, newRefreshToken);
-    }
-
-    public User getUserById(Long userId) {
-        User user = userMapper.findById(userId);
-        if(user == null){
-            throw new UserEmailException("아이디 불일치");
-        }
-        return user;
     }
 }

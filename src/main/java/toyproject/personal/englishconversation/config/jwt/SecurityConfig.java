@@ -100,7 +100,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {
+    public JwtUserDetailsService jwtUserDetailsService() {
         return new JwtUserDetailsService(userMapper);
     }
 }

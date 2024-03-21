@@ -19,6 +19,11 @@
         VALUES (#{email}, #{password}, #{nickname})
     </insert>
 
+    <delete id="delete">
+        DELETE FROM users
+        WHERE email = #{email}
+    </delete>
+
     <delete id="deleteAll">
         DELETE FROM users
     </delete>

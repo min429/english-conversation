@@ -1,6 +1,7 @@
 package toyproject.personal.englishconversation.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ import toyproject.personal.englishconversation.mapper.UserMapper;
 import java.time.Duration;
 import java.util.List;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -29,6 +31,10 @@ public class UserService {
     private final JwtService jwtService;
 
     public void save(SignUpRequestDto signUpRequestDto) {
+        User user = userMapper.findByEmail(signUpRequestDto.getEmail());
+        if(user != null) {
+            throw new UserEmailException("아이디 중복");
+        }
         userMapper.save(User.builder()
                         .email(signUpRequestDto.getEmail())
                         .password(passwordEncoder.encode(signUpRequestDto.getPassword())) // 암호화한 비밀번호 저장
@@ -58,5 +64,15 @@ public class UserService {
         jwtService.saveOrUpdateRefreshToken(user, newRefreshToken);
 
         return new SignInResultDto(newAccessToken, newRefreshToken);
+    }
+
+    public void delete(String email) {
+        User user = userMapper.findByEmail(email);
+        log.debug("email: {}", email);
+        log.debug("user.getEmail(): {}", user.getEmail());
+        if(user == null){
+            throw new UserEmailException("존재하지 않는 유저");
+        }
+        userMapper.delete(email);
     }
 }

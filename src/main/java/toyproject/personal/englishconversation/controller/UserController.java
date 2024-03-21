@@ -2,7 +2,6 @@ package toyproject.personal.englishconversation.controller;
 
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,7 +31,8 @@ public class UserController {
     }
 
     @PostMapping("/signout")
-    public void signout() {
-        // 회원 탈퇴 구현 예정
+    public ResponseEntity<String> signout(@RequestBody String email) {
+        userService.delete(email);
+        return ResponseEntity.ok().body("회원탈퇴 완료");
     }
 }

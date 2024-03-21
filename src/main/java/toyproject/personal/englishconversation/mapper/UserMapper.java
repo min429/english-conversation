@@ -9,5 +9,6 @@ public interface UserMapper {
     User findByEmail(String email);
     void save(User user);
     void update(User user);
+    void delete(String email);
     void deleteAll();
 }

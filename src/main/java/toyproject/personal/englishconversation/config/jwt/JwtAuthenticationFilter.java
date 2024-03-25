@@ -6,9 +6,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
-import toyproject.personal.englishconversation.exception.TokenValidationException;
+import toyproject.personal.englishconversation.exception.handler.jwt.JwtAuthenticationEntryPoint;
 
 import java.io.IOException;
 
@@ -19,6 +20,7 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final static String HEADER_AUTHORIZATION = "Authorization";
 
     /** 스프링 시큐리티 필터에서 인증 처리
@@ -42,7 +44,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String authorizationHeader = request.getHeader(HEADER_AUTHORIZATION);
         String accessToken = jwtProvider.getAccessToken(authorizationHeader); // 헤더에서 액세스 토큰 가져옴
 
-        jwtProvider.ValidateToken(accessToken);
+        try {
+            jwtProvider.ValidateToken(accessToken);
+        } catch (AuthenticationException e) {
+            jwtAuthenticationEntryPoint.commence(request, response, e);
+            return;
+        }
 
         // 사용자 인증 정보 - Principal(신원 ex. 사용자 이름), Credentials(자격 증명 ex. 비밀번호), Authorities(권한)
         Authentication authentication = jwtProvider.getAuthentication(accessToken);

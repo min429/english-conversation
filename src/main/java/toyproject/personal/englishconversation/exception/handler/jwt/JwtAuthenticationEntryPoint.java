@@ -32,7 +32,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         String json = objectMapper.writeValueAsString(errorResult);
 
         PrintWriter writer = response.getWriter();
-        writer.print(json);
+        writer.write(json);
         writer.flush();
     }
 }

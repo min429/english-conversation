@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import toyproject.personal.englishconversation.controller.dto.user.SignUpRequestDto;
-import toyproject.personal.englishconversation.controller.dto.user.SignInRequestDto;
-import toyproject.personal.englishconversation.controller.dto.user.SignInResultDto;
+import toyproject.personal.englishconversation.controller.dto.user.LogInRequestDto;
+import toyproject.personal.englishconversation.controller.dto.user.LogInResultDto;
 import toyproject.personal.englishconversation.service.UserService;
 
 @Controller
@@ -26,7 +26,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<SignInResultDto> login(@RequestBody SignInRequestDto request){
+    public ResponseEntity<LogInResultDto> login(@RequestBody LogInRequestDto request){
         return ResponseEntity.ok().body(userService.login(request));
     }
 

@@ -46,22 +46,22 @@ public class SecurityTestConfig {
 
         http.sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        http.addFilterBefore(jwtAuthenticationFilter(jwtProvider(jwtProperties())), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtAuthenticationFilter(jwtProvider(jwtProperties()), jwtAuthenticationEntryPoint()), UsernamePasswordAuthenticationFilter.class);
 
         // 인증 실패 시 수행할 작업 설정
         http.exceptionHandling(exceptionHandling ->
-                exceptionHandling.authenticationEntryPoint(authenticationEntryPoint()));
+                exceptionHandling.authenticationEntryPoint(jwtAuthenticationEntryPoint()));
 
         // 인가 실패 시 수행할 작업 설정
         http.exceptionHandling(exceptionHandling ->
-                exceptionHandling.accessDeniedHandler(accessDeniedHandler()));
+                exceptionHandling.accessDeniedHandler(jwtAccessDeniedHandler()));
 
         return http.build();
     }
 
     @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter(JwtProvider jwtProvider) {
-        return new JwtAuthenticationFilter(jwtProvider);
+    public JwtAuthenticationFilter jwtAuthenticationFilter(JwtProvider jwtProvider, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
+        return new JwtAuthenticationFilter(jwtProvider, jwtAuthenticationEntryPoint);
     }
 
     @Bean
@@ -95,12 +95,12 @@ public class SecurityTestConfig {
     }
 
     @Bean
-    public AccessDeniedHandler accessDeniedHandler() {
+    public JwtAccessDeniedHandler jwtAccessDeniedHandler() {
         return new JwtAccessDeniedHandler();
     }
 
     @Bean
-    public AuthenticationEntryPoint authenticationEntryPoint() {
+    public JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint() {
         return new JwtAuthenticationEntryPoint();
     }
 

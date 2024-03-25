@@ -5,20 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import toyproject.personal.englishconversation.config.jwt.JwtProvider;
 import toyproject.personal.englishconversation.controller.dto.jwt.JwtRefreshResponseDto;
 import toyproject.personal.englishconversation.controller.dto.user.SignUpRequestDto;
-import toyproject.personal.englishconversation.controller.dto.user.SignInRequestDto;
-import toyproject.personal.englishconversation.controller.dto.user.SignInResultDto;
-import toyproject.personal.englishconversation.domain.RefreshToken;
+import toyproject.personal.englishconversation.controller.dto.user.LogInRequestDto;
+import toyproject.personal.englishconversation.controller.dto.user.LogInResultDto;
 import toyproject.personal.englishconversation.domain.User;
 import toyproject.personal.englishconversation.exception.UserEmailException;
 import toyproject.personal.englishconversation.exception.UserPasswordException;
-import toyproject.personal.englishconversation.mapper.RefreshTokenMapper;
 import toyproject.personal.englishconversation.mapper.UserMapper;
-
-import java.time.Duration;
-import java.util.List;
 
 @Slf4j
 @Service
@@ -42,7 +36,7 @@ public class UserService {
                         .build());
     }
 
-    public SignInResultDto login(SignInRequestDto signInRequestDto){
+    public LogInResultDto login(LogInRequestDto signInRequestDto){
         User user = userMapper.findByEmail(signInRequestDto.getEmail());
         if(user == null){
             throw new UserEmailException("아이디 불일치");
@@ -63,13 +57,11 @@ public class UserService {
 
         jwtService.saveOrUpdateRefreshToken(user, newRefreshToken);
 
-        return new SignInResultDto(newAccessToken, newRefreshToken);
+        return new LogInResultDto(newAccessToken, newRefreshToken);
     }
 
     public void delete(String email) {
         User user = userMapper.findByEmail(email);
-        log.debug("email: {}", email);
-        log.debug("user.getEmail(): {}", user.getEmail());
         if(user == null){
             throw new UserEmailException("존재하지 않는 유저");
         }

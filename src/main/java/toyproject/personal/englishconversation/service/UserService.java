@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import toyproject.personal.englishconversation.controller.dto.jwt.JwtRefreshResponseDto;
 import toyproject.personal.englishconversation.controller.dto.user.SignUpRequestDto;
 import toyproject.personal.englishconversation.controller.dto.user.LogInRequestDto;
-import toyproject.personal.englishconversation.controller.dto.user.LogInResultDto;
+import toyproject.personal.englishconversation.controller.dto.user.LogInResponseDto;
 import toyproject.personal.englishconversation.domain.User;
 import toyproject.personal.englishconversation.exception.UserEmailException;
 import toyproject.personal.englishconversation.exception.UserPasswordException;
@@ -36,7 +36,7 @@ public class UserService {
                         .build());
     }
 
-    public LogInResultDto login(LogInRequestDto signInRequestDto){
+    public LogInResponseDto login(LogInRequestDto signInRequestDto){
         User user = userMapper.findByEmail(signInRequestDto.getEmail());
         if(user == null){
             throw new UserEmailException("아이디 불일치");
@@ -57,7 +57,7 @@ public class UserService {
 
         jwtService.saveOrUpdateRefreshToken(user, newRefreshToken);
 
-        return new LogInResultDto(newAccessToken, newRefreshToken);
+        return new LogInResponseDto(newAccessToken, newRefreshToken);
     }
 
     public void delete(String email) {

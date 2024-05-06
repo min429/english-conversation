@@ -1,4 +1,4 @@
-package toyproject.personal.englishconversation.controller.dto.chatgpt;
+package toyproject.personal.englishconversation.controller.dto.chat;
 import lombok.*;
 
 import java.util.ArrayList;

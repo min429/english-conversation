@@ -12,8 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import toyproject.personal.englishconversation.config.chatgpt.ChatGPTConfig;
 import toyproject.personal.englishconversation.config.chatgpt.ChatGPTContent;
-import toyproject.personal.englishconversation.controller.dto.chatgpt.ChatGPTRequestDto;
-import toyproject.personal.englishconversation.controller.dto.chatgpt.ChatGPTResponseDto;
+import toyproject.personal.englishconversation.controller.dto.chat.ChatGPTRequestDto;
+import toyproject.personal.englishconversation.controller.dto.chat.ChatGPTResponseDto;
+import toyproject.personal.englishconversation.controller.dto.chat.ChatRequestDto;
 import toyproject.personal.englishconversation.domain.message.GPTMessage;
 
 import java.io.IOException;
@@ -28,22 +29,22 @@ public class ChatGPTService {
     private final ChatGPTConfig chatGPTConfig;
     private final ChatGPTContent chatGPTContent; // 요청 스코프 빈
 
-    public GPTMessage callChatGPTApi(ChatGPTRequestDto requestDto) throws IOException {
-        HttpEntity<String> entity = prepareRequestEntity(requestDto);
+    public GPTMessage callChatGPTApi(ChatGPTRequestDto chatGPTRequestDto, ChatRequestDto chatRequestDto) throws IOException {
+        HttpEntity<String> entity = prepareRequestEntity(chatGPTRequestDto, chatRequestDto);
         ResponseEntity<String> response = executeApiRequest(entity);
 
         return processResponse(response);
     }
 
     /** API 요청 준비 **/
-    private HttpEntity<String> prepareRequestEntity(ChatGPTRequestDto requestDto) throws JsonProcessingException {
+    private HttpEntity<String> prepareRequestEntity(ChatGPTRequestDto chatGPTRequestDto, ChatRequestDto chatRequestDto) throws JsonProcessingException {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization", "Bearer " + chatGPTConfig.getApiKey());
 
-        setRequestDto(requestDto);
+        setRequestDto(chatGPTRequestDto, chatRequestDto);
 
-        return new HttpEntity<>(objectMapper.writeValueAsString(requestDto), headers);
+        return new HttpEntity<>(objectMapper.writeValueAsString(chatGPTRequestDto), headers);
     }
 
     /** API 요청 **/
@@ -60,9 +61,8 @@ public class ChatGPTService {
     }
 
     /** API 요청 전 메시지 세팅 **/
-    private void setRequestDto(ChatGPTRequestDto requestDto) {
-        chatGPTContent.setContent(requestDto.getTopic());
-        requestDto.addContentToMessages(chatGPTContent.getContent());
+    private void setRequestDto(ChatGPTRequestDto chatGPTRequestDto, ChatRequestDto chatRequestDto) {
+        chatGPTContent.setContent(chatRequestDto.getTopic());
+        chatGPTRequestDto.addContentToMessages(chatGPTContent.getContent());
     }
-
 }

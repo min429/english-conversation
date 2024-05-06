@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class LogInResultDto {
+public class LogInResponseDto {
     private String accessToken;
     private String refreshToken;
 }

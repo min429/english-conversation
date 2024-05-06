@@ -16,6 +16,12 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+        options: --entrypoint redis-server
     permissions:
       contents: read
       
@@ -48,6 +54,9 @@ jobs:
         GPT_API_KEY: ${{ secrets.GPT_API_KEY }}
         JWT_ISSUER: ${{ secrets.JWT_ISSUER }}
         JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+        REDIS_HOST: redis
+        REDIS_PORT: 6379
+        REDIS_INDEX: 1
         
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
     # If your project does not have the Gradle Wrapper configured, you can use the following configuration to run Gradle with a specified version.
@@ -62,6 +71,12 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+        options: --entrypoint redis-server
     permissions:
       contents: read
 
@@ -84,6 +99,9 @@ jobs:
         GPT_API_KEY: ${{ secrets.GPT_API_KEY }}
         JWT_ISSUER: ${{ secrets.JWT_ISSUER }}
         JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+        REDIS_HOST: redis
+        REDIS_PORT: 6379
+        REDIS_INDEX: 1
       
   dependency-submission:
 

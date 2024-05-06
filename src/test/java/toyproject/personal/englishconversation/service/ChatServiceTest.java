@@ -4,12 +4,15 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
 import toyproject.personal.englishconversation.config.chatgpt.ChatGPTContent;
-import toyproject.personal.englishconversation.controller.dto.chatgpt.ChatGPTRequestDto;
-import toyproject.personal.englishconversation.controller.dto.chatgpt.Message;
+import toyproject.personal.englishconversation.controller.dto.chat.ChatGPTRequestDto;
+import toyproject.personal.englishconversation.controller.dto.chat.ChatRequestDto;
+import toyproject.personal.englishconversation.controller.dto.chat.Message;
 import org.springframework.context.annotation.Import;
 import toyproject.personal.englishconversation.NoSecurityTestConfig;
 import toyproject.personal.englishconversation.domain.message.GPTMessage;
+import toyproject.personal.englishconversation.repository.ChatCustomRedisRepository;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -28,6 +31,9 @@ class ChatServiceTest {
     @Mock
     private ChatGPTService chatGPTService;
 
+    @Mock
+    private ChatCustomRedisRepository chatCustomRedisRepository;
+
     @InjectMocks
     private ChatService chatService;
 
@@ -43,24 +49,18 @@ class ChatServiceTest {
         return correctMap;
     }
 
-    private ChatGPTRequestDto getChatGPTRequestDto() {
-        ChatGPTRequestDto requestDto = ChatGPTRequestDto.builder()
-                .messages(getMessages())
-                .model("gpt4")
+    private ChatRequestDto getChatRequestDto() {
+        ChatRequestDto chatRequestDto = ChatRequestDto.builder()
+                .userId(1L)
                 .topic("topic")
+                .messages(getMessages())
                 .build();
 
-        // ChatGPTContent (기본설정) 추가
-        ChatGPTContent chatGPTContent = new ChatGPTContent();
-        chatGPTContent.setContent(requestDto.getTopic());
-        requestDto.addContentToMessages(chatGPTContent.getContent());
-
-        return requestDto;
+        return chatRequestDto;
     }
 
     private GPTMessage getGPTMessage() {
         return GPTMessage.builder()
-                .id("1")
                 .correctMap(getCorrectMap())
                 .explanation("explanation")
                 .message("message")
@@ -68,17 +68,16 @@ class ChatServiceTest {
     }
 
     @Test
-    void processChatRequest() throws IOException {
+    void chat() throws IOException {
         // Given
         GPTMessage gptMessage = getGPTMessage();
-        ChatGPTRequestDto chatGPTRequestDto = getChatGPTRequestDto();
-        given(chatGPTService.callChatGPTApi(chatGPTRequestDto)).willReturn(getGPTMessage());
+        ChatRequestDto chatRequestDto = getChatRequestDto();
+        given(chatGPTService.callChatGPTApi(any(ChatGPTRequestDto.class), any(ChatRequestDto.class))).willReturn(getGPTMessage());
 
         // When
-        GPTMessage result = chatService.processChatRequest(chatGPTRequestDto);
+        GPTMessage result = chatService.chat(chatRequestDto);
 
         // Then
         assertThat(gptMessage).isEqualTo(result);
-        verify(chatGPTService).callChatGPTApi(chatGPTRequestDto);
     }
 }

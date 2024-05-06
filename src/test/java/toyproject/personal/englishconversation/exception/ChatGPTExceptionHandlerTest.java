@@ -15,8 +15,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.client.HttpClientErrorException;
-import toyproject.personal.englishconversation.controller.dto.chatgpt.ChatGPTRequestDto;
+import toyproject.personal.englishconversation.controller.dto.chat.ChatGPTRequestDto;
 import toyproject.personal.englishconversation.NoSecurityTestConfig;
+import toyproject.personal.englishconversation.controller.dto.chat.ChatRequestDto;
 import toyproject.personal.englishconversation.service.ChatService;
 
 import java.io.IOException;
@@ -46,7 +47,7 @@ public class ChatGPTExceptionHandlerTest {
     public void HttpClientErrorExceptionHandle(HttpStatus status, String expectedCode, String expectedMessage) throws Exception {
         // Given
         HttpClientErrorException exception = new HttpClientErrorException(status, expectedMessage);
-        Mockito.when(chatService.processChatRequest(any(ChatGPTRequestDto.class)))
+        Mockito.when(chatService.chat(any(ChatRequestDto.class)))
                 .thenThrow(exception);
 
         // When
@@ -74,7 +75,7 @@ public class ChatGPTExceptionHandlerTest {
     @Test
     public void objectMapperExceptionHandle() throws Exception {
         // Given
-        given(chatService.processChatRequest(any(ChatGPTRequestDto.class)))
+        given(chatService.chat(any(ChatRequestDto.class)))
                 .willThrow(new IOException());
 
         // When

@@ -8,8 +8,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import toyproject.personal.englishconversation.controller.dto.chatgpt.ChatGPTRequestDto;
+import toyproject.personal.englishconversation.controller.dto.chat.ChatGPTRequestDto;
 import toyproject.personal.englishconversation.NoSecurityTestConfig;
+import toyproject.personal.englishconversation.controller.dto.chat.ChatRequestDto;
 import toyproject.personal.englishconversation.domain.message.GPTMessage;
 import toyproject.personal.englishconversation.service.ChatService;
 
@@ -41,12 +42,11 @@ class ChatControllerTest {
     void chat() throws Exception {
         // Given
         GPTMessage gptMessage = GPTMessage.builder()
-                .id("1")
                 .correctMap(getCorrectMap())
                 .explanation("explanation")
                 .message("message")
                 .build();
-        given(chatService.processChatRequest(any(ChatGPTRequestDto.class))).willReturn(gptMessage);
+        given(chatService.chat(any(ChatRequestDto.class))).willReturn(gptMessage);
 
         // When
         ResultActions resultActions = mockMvc.perform(post("/chat")
@@ -56,7 +56,6 @@ class ChatControllerTest {
         // Then
         resultActions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value("1"))
                 .andExpect(jsonPath("$.explanation").value("explanation"))
                 .andExpect(jsonPath("$.message").value("message"))
                 .andExpect(jsonPath("$.correctMap['wrong sentence']").value("correct sentence"));

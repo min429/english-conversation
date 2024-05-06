@@ -12,9 +12,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.client.RestTemplate;
 import toyproject.personal.englishconversation.config.chatgpt.ChatGPTConfig;
 import toyproject.personal.englishconversation.config.chatgpt.ChatGPTContent;
-import toyproject.personal.englishconversation.controller.dto.chatgpt.ChatGPTRequestDto;
-import toyproject.personal.englishconversation.controller.dto.chatgpt.ChatGPTResponseDto;
-import toyproject.personal.englishconversation.controller.dto.chatgpt.Message;
+import toyproject.personal.englishconversation.controller.dto.chat.ChatGPTRequestDto;
+import toyproject.personal.englishconversation.controller.dto.chat.ChatGPTResponseDto;
+import toyproject.personal.englishconversation.controller.dto.chat.ChatRequestDto;
+import toyproject.personal.englishconversation.controller.dto.chat.Message;
 import toyproject.personal.englishconversation.NoSecurityTestConfig;
 import toyproject.personal.englishconversation.domain.message.GPTMessage;
 
@@ -56,19 +57,27 @@ class ChatGPTServiceTest {
         return messages;
     }
 
-    private ChatGPTRequestDto getChatGPTRequestDto() {
+    private ChatGPTRequestDto getChatGPTRequestDto(ChatRequestDto chatRequestDto) {
         ChatGPTRequestDto requestDto = ChatGPTRequestDto.builder()
-                .messages(getMessages())
-                .model("gpt4")
-                .topic("topic")
+                .messages(chatRequestDto.getMessages())
                 .build();
 
         // ChatGPTContent (기본설정) 추가
         ChatGPTContent chatGPTContent = new ChatGPTContent();
-        chatGPTContent.setContent(requestDto.getTopic());
+        chatGPTContent.setContent(chatRequestDto.getTopic());
         requestDto.addContentToMessages(chatGPTContent.getContent());
 
         return requestDto;
+    }
+
+    private ChatRequestDto getChatRequestDto() {
+        ChatRequestDto chatRequestDto = ChatRequestDto.builder()
+                .userId(1L)
+                .topic("topic")
+                .messages(getMessages())
+                .build();
+
+        return chatRequestDto;
     }
 
     private ChatGPTResponseDto getChatGPTResponseDto(){
@@ -86,7 +95,6 @@ class ChatGPTServiceTest {
 
     private GPTMessage getGPTMessage() {
         return GPTMessage.builder()
-                .id("1")
                 .correctMap(getCorrectMap())
                 .explanation("explanation")
                 .message("message")
@@ -97,6 +105,8 @@ class ChatGPTServiceTest {
     public void callChatGPTApiTest() throws Exception {
         // Given
         GPTMessage gptMessage = getGPTMessage();
+        ChatRequestDto chatRequestDto = getChatRequestDto();
+        ChatGPTRequestDto chatGPTRequestDto = getChatGPTRequestDto(chatRequestDto);
         given(chatGPTConfig.getApiKey()).willReturn("test_api_key");
         given(chatGPTContent.getContent()).willReturn("test content");
         given(restTemplate.postForEntity(any(String.class), any(HttpEntity.class), any(Class.class)))
@@ -108,7 +118,7 @@ class ChatGPTServiceTest {
         given(objectMapper.writeValueAsString(any(ChatGPTRequestDto.class))).willReturn("expected json");
 
         // When
-        GPTMessage result = chatGPTService.callChatGPTApi(getChatGPTRequestDto());
+        GPTMessage result = chatGPTService.callChatGPTApi(chatGPTRequestDto, chatRequestDto);
 
         // Then
         assertThat(gptMessage).isEqualTo(result);
